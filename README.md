@@ -19,9 +19,14 @@ This agent uses **Gemini's function calling feature** to create a true autonomou
 | `lookup_cwe` | Retrieves CWE vulnerability details |
 | `analyze_code_section` | Deep analysis of specific code sections |
 | `report_vulnerability` | Reports each found vulnerability |
+| `submit_full_analysis` | Batch submit all vulnerabilities, attack vectors, and recommendations |
 | `generate_fix` | Gets guidance for fixing vulnerabilities |
 | `apply_security_fix` | Applies fixes to the code |
 | `calculate_security_score` | Calculates overall security score |
+| `report_attack_vector` | Reports potential attack vectors |
+| `report_risk_area` | Reports code areas with security risks |
+| `add_recommendation` | Adds security recommendations |
+| `report_secure_pattern` | Reports secure coding patterns found |
 | `finalize_scan` | Completes the scanning process |
 | `finalize_refactor` | Completes the refactoring process |
 
