@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Secure Refactoring Agent</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>AI Secure Refactoring Agent</span>
+            </div>
+            <nav class="nav">
+                <button class="nav-btn active" data-tab="scan">
+                    <i class="fas fa-search"></i> Scan
+                </button>
+                <button class="nav-btn" data-tab="reference">
+                    <i class="fas fa-book"></i> Reference
+                </button>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Scan Tab -->
+            <section id="scan-tab" class="tab-content active">
+                <div class="panel-container">
+                    <!-- Input Panel -->
+                    <div class="panel input-panel">
+                        <div class="panel-header">
+                            <h2><i class="fas fa-code"></i> Code Input</h2>
+                            <div class="panel-actions">
+                                <select id="language-select">
+                                    <option value="">Auto-detect</option>
+                                    <option value="javascript">JavaScript</option>
+                                    <option value="typescript">TypeScript</option>
+                                    <option value="python">Python</option>
+                                    <option value="java">Java</option>
+                                    <option value="php">PHP</option>
+                                    <option value="go">Go</option>
+                                    <option value="ruby">Ruby</option>
+                                    <option value="csharp">C#</option>
+                                </select>
+                                <button id="load-sample" class="btn btn-secondary">
+                                    <i class="fas fa-flask"></i> Load Sample
+                                </button>
+                                <label class="btn btn-secondary">
+                                    <i class="fas fa-upload"></i> Upload
+                                    <input type="file" id="file-upload" accept=".js,.jsx,.ts,.tsx,.py,.java,.php,.go,.rb,.cs" hidden>
+                                </label>
+                                <button id="scan-btn" class="btn btn-primary">
+                                    <i class="fas fa-search"></i> Scan
+                                </button>
+                                <button id="clear-btn" class="btn btn-secondary">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="code-editor-wrapper">
+                                <div id="line-numbers" class="line-numbers"><span>1</span></div>
+                                <textarea id="code-input" placeholder="Paste your code here or upload a file..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Panel -->
+                    <div class="panel results-panel">
+                        <div class="panel-header">
+                            <h2><i class="fas fa-bug"></i> Vulnerabilities Found</h2>
+                            <div class="panel-actions">
+                                <span id="vuln-count" class="badge">0</span>
+                                <button id="fix-all-btn" class="btn btn-success" disabled>
+                                    <i class="fas fa-wrench"></i> Fix All
+                                </button>
+                                <button id="download-report-btn" class="btn btn-secondary" disabled>
+                                    <i class="fas fa-download"></i> Download Report
+                                </button>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div id="results-container">
+                                <div class="empty-state">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <p>No scan results yet</p>
+                                    <span>Paste code and click "Scan for Vulnerabilities"</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer" id="summary-footer" style="display: none;">
+                            <div id="scan-summary"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Analysis Panel (Shows after scan) -->
+                <div id="analysis-panel" class="panel full-width" style="display: none;">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-chart-line"></i> Security Posture Analysis</h2>
+                    </div>
+                    <div class="panel-body" id="analysis-content"></div>
+                </div>
+
+                <!-- Refactored Code Panel (Hidden initially) -->
+                <div id="refactored-panel" class="panel full-width" style="display: none;">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-check-circle"></i> Refactored Secure Code</h2>
+                        <div class="panel-actions">
+                            <button id="copy-refactored" class="btn btn-secondary">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <button id="close-refactored" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Close
+                            </button>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <pre id="refactored-code"></pre>
+                    </div>
+                    <div class="panel-footer">
+                        <div id="fixes-summary"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reference Tab -->
+            <section id="reference-tab" class="tab-content">
+                <div class="panel-container single">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2><i class="fas fa-book"></i> OWASP Top 10 (2021) Reference</h2>
+                        </div>
+                        <div class="panel-body" id="owasp-reference">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay">
+            <div class="loading-content">
+                <div class="spinner"></div>
+                <p id="loading-text">Analyzing code...</p>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="toast"></div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
