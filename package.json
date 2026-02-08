@@ -1,6 +1,6 @@
 {
   "name": "ai-secure-refactor-agent",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "AI-powered security vulnerability detection and code refactoring agent using Google Gemini",
   "main": "src/index.js",
   "type": "module",

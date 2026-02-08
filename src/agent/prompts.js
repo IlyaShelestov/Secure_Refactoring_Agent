@@ -300,6 +300,38 @@ export const LANGUAGE_SECURITY_TIPS = {
     'Use CSRF tokens for all forms',
     'Validate with filter_var()',
   ],
+  typescript: [
+    'Avoid using `any` type — use strict typing for all function parameters and return values',
+    'Use parameterized queries with TypeORM, Prisma, or Knex.js',
+    'Enable strict mode in tsconfig.json (strict: true)',
+    'Use crypto.randomUUID() or crypto.randomBytes() instead of Math.random()',
+    'Validate input with zod, io-ts, or class-validator',
+    'Avoid non-null assertions (!) — use proper null checks',
+  ],
+  csharp: [
+    'Use parameterized queries with SqlParameter or Entity Framework',
+    'Use ASP.NET Core Data Protection API for encryption',
+    'Use built-in antiforgery tokens for CSRF protection',
+    'Avoid BinaryFormatter — use System.Text.Json for serialization',
+    'Use Identity framework for authentication and authorization',
+    'Validate input with DataAnnotations or FluentValidation',
+  ],
+  go: [
+    'Use parameterized queries with database/sql placeholders ($1, ?)',
+    'Use crypto/rand instead of math/rand for security-sensitive values',
+    'Always check and handle error returns — never discard with _',
+    'Use tls.Config with MinVersion: tls.VersionTLS12',
+    'Use html/template (auto-escaping) instead of text/template for web output',
+    'Validate input with go-playground/validator',
+  ],
+  ruby: [
+    'Use ActiveRecord parameterized queries — never string interpolation in SQL',
+    'Avoid system(), exec(), backticks — use Open3.capture3 with separate args',
+    'Use strong_parameters (params.require().permit()) for mass assignment protection',
+    'Use Marshal.load only with trusted data — prefer JSON for serialization',
+    'Use YAML.safe_load instead of YAML.load',
+    'Enable CSRF protection with protect_from_forgery in Rails controllers',
+  ],
 };
 
 export default {

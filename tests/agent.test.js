@@ -56,11 +56,15 @@ describe('Knowledge Base', () => {
     }
   });
 
-  test('Vulnerability patterns exist for JavaScript, Python, Java, PHP', () => {
+  test('Vulnerability patterns exist for all 8 supported languages', () => {
     expect(VULNERABILITY_PATTERNS).toHaveProperty('javascript');
     expect(VULNERABILITY_PATTERNS).toHaveProperty('python');
     expect(VULNERABILITY_PATTERNS).toHaveProperty('java');
     expect(VULNERABILITY_PATTERNS).toHaveProperty('php');
+    expect(VULNERABILITY_PATTERNS).toHaveProperty('typescript');
+    expect(VULNERABILITY_PATTERNS).toHaveProperty('csharp');
+    expect(VULNERABILITY_PATTERNS).toHaveProperty('go');
+    expect(VULNERABILITY_PATTERNS).toHaveProperty('ruby');
   });
 });
 
@@ -190,6 +194,80 @@ describe('Static Pattern Scan (toolStaticPatternScan)', () => {
     const result = agent.toolStaticPatternScan(code, 'java');
     const sqlFindings = result.findings.filter(f => f.type === 'SQL Injection');
     expect(sqlFindings.length).toBeGreaterThan(0);
+  });
+
+  // TypeScript patterns
+  test('detects eval usage in TypeScript', () => {
+    const code = `const result: any = eval(userInput);`;
+    const result = agent.toolStaticPatternScan(code, 'typescript');
+    const evalFindings = result.findings.filter(f => f.type === 'Eval Usage');
+    expect(evalFindings.length).toBeGreaterThan(0);
+  });
+
+  test('detects any type abuse in TypeScript', () => {
+    const code = `function handle(data: any) { return data as any; }`;
+    const result = agent.toolStaticPatternScan(code, 'typescript');
+    const anyFindings = result.findings.filter(f => f.type === 'Any Type Abuse');
+    expect(anyFindings.length).toBeGreaterThan(0);
+  });
+
+  test('detects Hardcoded Secrets in TypeScript', () => {
+    const code = `const apiKey = 'sk-abc123xyz';`;
+    const result = agent.toolStaticPatternScan(code, 'typescript');
+    const secretFindings = result.findings.filter(f => f.type === 'Hardcoded Secrets');
+    expect(secretFindings.length).toBeGreaterThan(0);
+  });
+
+  // C# patterns
+  test('detects SQL Injection in C#', () => {
+    const code = `var cmd = new SqlCommand("SELECT * FROM users WHERE id=" + userId, conn);`;
+    const result = agent.toolStaticPatternScan(code, 'csharp');
+    const sqlFindings = result.findings.filter(f => f.type === 'SQL Injection');
+    expect(sqlFindings.length).toBeGreaterThan(0);
+  });
+
+  test('detects Weak Crypto in C#', () => {
+    const code = `var hash = MD5.Create();`;
+    const result = agent.toolStaticPatternScan(code, 'csharp');
+    const cryptoFindings = result.findings.filter(f => f.type === 'Weak Crypto');
+    expect(cryptoFindings.length).toBeGreaterThan(0);
+  });
+
+  // Go patterns
+  test('detects SQL Injection in Go', () => {
+    const code = `rows, err := db.Query(fmt.Sprintf("SELECT * FROM users WHERE id=%s", id))`;
+    const result = agent.toolStaticPatternScan(code, 'go');
+    const sqlFindings = result.findings.filter(f => f.type === 'SQL Injection');
+    expect(sqlFindings.length).toBeGreaterThan(0);
+  });
+
+  test('detects Insecure TLS in Go', () => {
+    const code = `tlsConfig := &tls.Config{InsecureSkipVerify: true}`;
+    const result = agent.toolStaticPatternScan(code, 'go');
+    const tlsFindings = result.findings.filter(f => f.type === 'Insecure TLS');
+    expect(tlsFindings.length).toBeGreaterThan(0);
+  });
+
+  // Ruby patterns
+  test('detects Command Injection in Ruby', () => {
+    const code = `system("rm -rf " + params[:path])`;
+    const result = agent.toolStaticPatternScan(code, 'ruby');
+    const cmdFindings = result.findings.filter(f => f.type === 'Command Injection');
+    expect(cmdFindings.length).toBeGreaterThan(0);
+  });
+
+  test('detects eval usage in Ruby', () => {
+    const code = `result = eval(user_input)`;
+    const result = agent.toolStaticPatternScan(code, 'ruby');
+    const evalFindings = result.findings.filter(f => f.type === 'Eval Usage');
+    expect(evalFindings.length).toBeGreaterThan(0);
+  });
+
+  test('detects Deserialization in Ruby', () => {
+    const code = `data = Marshal.load(user_data)`;
+    const result = agent.toolStaticPatternScan(code, 'ruby');
+    const deserFindings = result.findings.filter(f => f.type === 'Deserialization');
+    expect(deserFindings.length).toBeGreaterThan(0);
   });
 });
 

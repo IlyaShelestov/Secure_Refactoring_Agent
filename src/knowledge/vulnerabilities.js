@@ -399,6 +399,143 @@ export const VULNERABILITY_PATTERNS = {
       /unserialize\s*\(/gi,
     ],
   },
+  typescript: {
+    'SQL Injection': [
+      /query\s*\(\s*[`'"]\s*SELECT.*\+/gi,
+      /query\s*\(\s*[`'"].*\$\{/gi,
+      /execute\s*\(\s*[`'"]\s*(SELECT|INSERT|UPDATE|DELETE).*\+/gi,
+    ],
+    'XSS': [
+      /\.innerHTML\s*=/gi,
+      /\.outerHTML\s*=/gi,
+      /dangerouslySetInnerHTML/gi,
+    ],
+    'Command Injection': [
+      /exec\s*\(\s*[`'"].*\+/gi,
+      /spawn\s*\(\s*[`'"].*\+/gi,
+      /child_process\.(exec|spawn)\s*\(/gi,
+    ],
+    'Hardcoded Secrets': [
+      /password\s*[:=]\s*['"][^'"]+['"]/gi,
+      /api[_-]?key\s*[:=]\s*['"][^'"]+['"]/gi,
+      /secret\s*[:=]\s*['"][^'"]+['"]/gi,
+      /token\s*[:=]\s*['"][^'"]+['"]/gi,
+    ],
+    'Eval Usage': [
+      /eval\s*\(/gi,
+      /new\s+Function\s*\(/gi,
+    ],
+    'Insecure Random': [
+      /Math\.random\s*\(\s*\)/gi,
+    ],
+    'Any Type Abuse': [
+      /:\s*any\b/gi,
+      /as\s+any\b/gi,
+    ],
+    'Non-null Assertion': [
+      /\w+!\./gi,
+      /\w+![\[;,)]/gi,
+    ],
+  },
+  csharp: {
+    'SQL Injection': [
+      /SqlCommand\s*\(.*\+/gi,
+      /ExecuteReader\s*\(\s*.*\+/gi,
+      /ExecuteNonQuery\s*\(\s*.*\+/gi,
+      /string\.Format\s*\(\s*["'].*SELECT/gi,
+    ],
+    'Command Injection': [
+      /Process\.Start\s*\(/gi,
+      /ProcessStartInfo\s*\(.*\+/gi,
+    ],
+    'XSS': [
+      /Response\.Write\s*\(/gi,
+      /Html\.Raw\s*\(/gi,
+    ],
+    'Hardcoded Secrets': [
+      /string\s+password\s*=\s*["'][^"']+["']/gi,
+      /string\s+apiKey\s*=\s*["'][^"']+["']/gi,
+      /ConnectionString\s*=\s*["'].*Password=/gi,
+    ],
+    'Insecure Deserialization': [
+      /BinaryFormatter\s*\(\s*\)/gi,
+      /JsonConvert\.DeserializeObject/gi,
+    ],
+    'Weak Crypto': [
+      /MD5\.Create\s*\(\s*\)/gi,
+      /SHA1\.Create\s*\(\s*\)/gi,
+      /new\s+DESCryptoServiceProvider/gi,
+    ],
+    'Path Traversal': [
+      /Path\.Combine\s*\(.*Request/gi,
+      /\.\.\//gi,
+    ],
+  },
+  go: {
+    'SQL Injection': [
+      /fmt\.Sprintf\s*\(\s*["'].*SELECT/gi,
+      /db\.(Query|Exec)\s*\(\s*["'].*\+/gi,
+      /db\.(Query|Exec)\s*\(\s*fmt\.Sprintf/gi,
+    ],
+    'Command Injection': [
+      /exec\.Command\s*\(.*\+/gi,
+      /exec\.CommandContext\s*\(.*\+/gi,
+      /os\/exec/gi,
+    ],
+    'Hardcoded Secrets': [
+      /password\s*[:=]\s*["'][^"']+["']/gi,
+      /apiKey\s*[:=]\s*["'][^"']+["']/gi,
+      /secret\s*[:=]\s*["'][^"']+["']/gi,
+    ],
+    'Weak Crypto': [
+      /md5\.New\s*\(\s*\)/gi,
+      /sha1\.New\s*\(\s*\)/gi,
+      /des\.NewCipher/gi,
+    ],
+    'Insecure TLS': [
+      /InsecureSkipVerify\s*:\s*true/gi,
+      /MinVersion\s*:.*tls\.VersionSSL/gi,
+    ],
+    'Unhandled Error': [
+      /,\s*_\s*:?=\s*\w+\.\w+\s*\(/gi,
+    ],
+  },
+  ruby: {
+    'SQL Injection': [
+      /where\s*\(\s*["'].*#\{/gi,
+      /execute\s*\(\s*["'].*#\{/gi,
+      /find_by_sql\s*\(\s*["'].*#\{/gi,
+    ],
+    'Command Injection': [
+      /system\s*\(/gi,
+      /`[^`]*#\{/gi,
+      /exec\s*\(/gi,
+      /IO\.popen\s*\(/gi,
+      /%x\{/gi,
+    ],
+    'Eval Usage': [
+      /eval\s*\(/gi,
+      /instance_eval/gi,
+      /class_eval/gi,
+      /send\s*\(\s*params/gi,
+    ],
+    'Hardcoded Secrets': [
+      /password\s*=\s*['"][^'"]+['"]/gi,
+      /api_key\s*=\s*['"][^'"]+['"]/gi,
+      /secret\s*=\s*['"][^'"]+['"]/gi,
+    ],
+    'Mass Assignment': [
+      /params\.permit!/gi,
+      /attr_accessible/gi,
+    ],
+    'Deserialization': [
+      /Marshal\.load/gi,
+      /YAML\.load\s*\(/gi,
+    ],
+    'Open Redirect': [
+      /redirect_to\s+params/gi,
+    ],
+  },
 };
 
 export default {

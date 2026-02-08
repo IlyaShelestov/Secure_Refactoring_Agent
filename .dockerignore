@@ -1,6 +1,10 @@
 # Dependencies
 node_modules/
 
+# Git
+.git/
+.gitignore
+
 # Environment files
 .env
 .env.local
@@ -10,6 +14,10 @@ node_modules/
 logs/
 *.log
 npm-debug.log*
+
+# Tests
+tests/
+coverage/
 
 # OS files
 .DS_Store

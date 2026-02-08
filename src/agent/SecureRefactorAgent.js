@@ -604,6 +604,7 @@ class SecureRefactorAgent {
       const lines = code.split('\n');
       lines.forEach((line, index) => {
         for (const pattern of vulnPatterns) {
+          pattern.lastIndex = 0; // Reset stateful lastIndex for /g regexes
           if (pattern.test(line)) {
             findings.push({
               type: vulnType,
@@ -878,7 +879,7 @@ class SecureRefactorAgent {
   }
 
   toolApplySecurityFix(originalCode, vulnerableSection, fixedSection, explanation) {
-    const fixedCode = originalCode.replace(vulnerableSection, fixedSection);
+    const fixedCode = originalCode.replaceAll(vulnerableSection, fixedSection);
     
     this.sessionState.appliedFixes.push({
       original: vulnerableSection,

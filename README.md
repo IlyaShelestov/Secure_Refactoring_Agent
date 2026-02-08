@@ -120,6 +120,8 @@ This agent uses **Gemini's function calling feature** to create a true autonomou
 | `RATE_LIMIT_MAX_REQUESTS` | Max requests per window | 100 |
 | `MAX_CODE_LENGTH` | Maximum code length in characters | 50000 |
 | `LOG_LEVEL` | Logging level (error/warn/info/debug) | info |
+| `SUPPORTED_LANGUAGES` | Comma-separated list of supported languages | javascript,typescript,python,java,csharp,php,go,ruby |
+| `ALLOWED_ORIGINS` | Comma-separated list of allowed CORS origins | * |
 
 ## API Endpoints
 
@@ -128,6 +130,12 @@ This agent uses **Gemini's function calling feature** to create a true autonomou
 GET /api/health
 ```
 Returns the server health status.
+
+### Agent Info
+```
+GET /api/agent/info
+```
+Returns agent capabilities, supported languages, and available tools.
 
 ### Scan Code for Vulnerabilities
 ```
@@ -275,12 +283,24 @@ secure-refactor-agent/
 │   │   └── app.js                  # Frontend application
 │   └── index.html                  # Web interface
 ├── logs/                           # Log files (created at runtime)
+├── tests/
+│   └── agent.test.js               # Automated test suite (58 tests)
 ├── .env.example                    # Environment template
 ├── Dockerfile                      # Docker image definition
 ├── docker-compose.yml              # Docker Compose configuration
 ├── package.json                    # Node.js dependencies
 └── README.md                       # This file
 ```
+
+## Testing
+
+Run the automated test suite:
+
+```bash
+npm test
+```
+
+The project includes 58 unit tests covering knowledge base validation, language detection, static pattern scanning (all 8 languages), security scoring, OWASP/CWE lookups, vulnerability reporting, analysis, fix application, session management, and summaries.
 
 ## Security Considerations
 
@@ -317,4 +337,4 @@ MIT License
 
 ## Author
 
-Created for Assignment 6 - AI-assisted Software Development
+Created for AI-assisted Software Development — Final Project
