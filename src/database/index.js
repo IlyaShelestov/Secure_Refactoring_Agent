@@ -127,22 +127,37 @@ const countScans = db.prepare(`
 // ---------------------------------------------------------------------------
 
 /**
+ * Coerce a value to a SQLite-safe type (number, string, bigint, Buffer, or null).
+ * Arrays and objects are serialised to JSON strings.
+ */
+function toBindable(val) {
+  if (val === undefined || val === null) return null;
+  const t = typeof val;
+  if (t === 'number' || t === 'string' || t === 'bigint') return val;
+  if (Buffer.isBuffer(val)) return val;
+  if (Array.isArray(val)) return JSON.stringify(val);
+  if (t === 'object') return JSON.stringify(val);
+  if (t === 'boolean') return val ? 1 : 0;
+  return String(val);
+}
+
+/**
  * Save a completed scan and its vulnerabilities inside a transaction.
  */
 export function saveScan(scanId, result, code, filename) {
   const timestamp = new Date().toISOString();
   const language = result.language || null;
   const success = result.success ? 1 : 0;
-  const securityScore = result.securityScore ?? result.security_score ?? null;
-  const riskLevel = result.riskLevel ?? result.risk_level ?? null;
-  const summary = result.summary || null;
+  const securityScore = toBindable(result.securityScore ?? result.security_score ?? null);
+  const riskLevel = toBindable(result.riskLevel ?? result.risk_level ?? null);
+  const summary = toBindable(result.summary);
 
   const saveTransaction = db.transaction(() => {
     insertScan.run({
       scanId,
       timestamp,
-      language,
-      filename: filename || null,
+      language: toBindable(language),
+      filename: toBindable(filename),
       code,
       success,
       securityScore,
@@ -155,13 +170,13 @@ export function saveScan(scanId, result, code, filename) {
     for (const v of vulns) {
       insertVuln.run({
         scanId,
-        type: v.type || v.title || null,
-        severity: v.severity || null,
-        owasp: v.owasp || v.owaspCategory || null,
-        cwe: v.cwe || v.cweId || null,
-        description: v.description || null,
-        location: v.location || (v.line ? `Line ${v.line}` : null),
-        confidence: v.confidence ?? null,
+        type: toBindable(v.type || v.title),
+        severity: toBindable(v.severity),
+        owasp: toBindable(v.owasp || v.owaspCategory),
+        cwe: toBindable(v.cwe || v.cweId),
+        description: toBindable(v.description),
+        location: toBindable(v.location || (v.line ? `Line ${v.line}` : null)),
+        confidence: toBindable(v.confidence),
         rawJson: JSON.stringify(v),
       });
     }
