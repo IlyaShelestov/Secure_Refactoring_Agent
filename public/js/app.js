@@ -871,3 +871,165 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+// ---------------------------------------------------------------------------
+// Scan History
+// ---------------------------------------------------------------------------
+
+const historyContainer = document.getElementById('history-container');
+const historyCountBadge = document.getElementById('history-count');
+const refreshHistoryBtn = document.getElementById('refresh-history-btn');
+const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+// Load scan history from API
+async function loadHistory() {
+    try {
+        const response = await fetch('/api/scans?limit=100');
+        const data = await response.json();
+        renderHistory(data.scans || [], data.total || 0);
+    } catch (error) {
+        console.error('Failed to load history:', error);
+        historyContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>Failed to load history</p>
+                <span>${escapeHtml(error.message)}</span>
+            </div>`;
+    }
+}
+
+// Render history table
+function renderHistory(scans, total) {
+    historyCountBadge.textContent = total;
+
+    if (scans.length === 0) {
+        historyContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-history"></i>
+                <p>No scan history yet</p>
+                <span>Completed scans will appear here</span>
+            </div>`;
+        return;
+    }
+
+    const rows = scans.map(scan => {
+        const date = new Date(scan.timestamp).toLocaleString();
+        const score = scan.securityScore ?? '—';
+        const scoreClass = typeof scan.securityScore === 'number'
+            ? (scan.securityScore >= 70 ? 'good' : scan.securityScore >= 40 ? 'medium' : 'poor')
+            : '';
+        const risk = scan.riskLevel || '—';
+
+        return `
+            <tr data-scan-id="${escapeHtml(scan.scanId)}" onclick="viewHistoryScan('${escapeHtml(scan.scanId)}')">
+                <td>${escapeHtml(date)}</td>
+                <td>${escapeHtml(scan.language || 'Unknown')}</td>
+                <td>${escapeHtml(scan.filename || '—')}</td>
+                <td><span class="history-row-score ${scoreClass}">${score}</span></td>
+                <td><span class="badge ${getSeverityClass(risk)}">${escapeHtml(risk)}</span></td>
+                <td class="history-summary">${escapeHtml(scan.summary || '—')}</td>
+            </tr>`;
+    }).join('');
+
+    historyContainer.innerHTML = `
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Language</th>
+                    <th>File</th>
+                    <th>Score</th>
+                    <th>Risk</th>
+                    <th>Summary</th>
+                </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>`;
+}
+
+// View a past scan — fetches full details and loads into main Scan tab
+async function viewHistoryScan(scanId) {
+    showLoading('Loading scan details...');
+    try {
+        const response = await fetch(`/api/scan/${encodeURIComponent(scanId)}`);
+        const result = await response.json();
+
+        if (result) {
+            // Switch to scan tab
+            navBtns.forEach(b => b.classList.remove('active'));
+            document.querySelector('[data-tab="scan"]').classList.add('active');
+            tabContents.forEach(c => c.classList.remove('active'));
+            document.getElementById('scan-tab').classList.add('active');
+
+            // Populate scan tab with historical data
+            if (result.code) codeInput.value = result.code;
+            if (result.language) languageSelect.value = result.language;
+            currentScanId = scanId;
+            currentVulnerabilities = result.vulnerabilities || [];
+            currentCode = result.code || '';
+            displayResults(result);
+
+            if (result.analysis) {
+                currentAnalysis = result.analysis;
+                displayAnalysis(result.analysis);
+            }
+            showToast('Loaded scan from history', 'success');
+        } else {
+            showToast('Scan not found', 'error');
+        }
+    } catch (error) {
+        console.error('Failed to load scan:', error);
+        showToast('Failed to load scan details', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+window.viewHistoryScan = viewHistoryScan;
+
+// Clear all scan history with confirmation
+function confirmClearHistory() {
+    const dialog = document.createElement('div');
+    dialog.className = 'confirm-dialog';
+    dialog.innerHTML = `
+        <div class="confirm-dialog-box">
+            <p><i class="fas fa-exclamation-triangle" style="color: var(--warning); margin-right: 0.5rem;"></i>
+               Are you sure you want to clear all scan history? This cannot be undone.</p>
+            <div class="btn-group">
+                <button class="btn btn-secondary" id="cancel-clear">Cancel</button>
+                <button class="btn btn-danger" id="confirm-clear">Clear All</button>
+            </div>
+        </div>`;
+    document.body.appendChild(dialog);
+
+    document.getElementById('cancel-clear').addEventListener('click', () => dialog.remove());
+    document.getElementById('confirm-clear').addEventListener('click', async () => {
+        dialog.remove();
+        try {
+            const response = await fetch('/api/scans', { method: 'DELETE' });
+            const data = await response.json();
+            if (data.success) {
+                showToast(`Cleared ${data.removed} scans from history`, 'success');
+                loadHistory();
+            } else {
+                showToast('Failed to clear history', 'error');
+            }
+        } catch (error) {
+            console.error('Failed to clear history:', error);
+            showToast('Failed to clear history', 'error');
+        }
+    });
+}
+
+// Auto-load history when History tab is shown
+if (refreshHistoryBtn) refreshHistoryBtn.addEventListener('click', loadHistory);
+if (clearHistoryBtn) clearHistoryBtn.addEventListener('click', confirmClearHistory);
+
+// Load history when tab is activated
+const originalNavHandler = navBtns.forEach.bind(navBtns);
+navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        if (btn.dataset.tab === 'history') {
+            loadHistory();
+        }
+    });
+});

@@ -29,7 +29,7 @@ describe('Knowledge Base', () => {
   });
 
   test('Each OWASP category has name, description, cwes, and mitigations', () => {
-    for (const [id, data] of Object.entries(OWASP_TOP_10_2021)) {
+    for (const [_id, data] of Object.entries(OWASP_TOP_10_2021)) {
       expect(data).toHaveProperty('name');
       expect(data).toHaveProperty('description');
       expect(data).toHaveProperty('cwes');
@@ -48,7 +48,7 @@ describe('Knowledge Base', () => {
   });
 
   test('CWE entries have required fields', () => {
-    for (const [id, data] of Object.entries(CWE_DATABASE)) {
+    for (const [_id, data] of Object.entries(CWE_DATABASE)) {
       expect(data).toHaveProperty('name');
       expect(data).toHaveProperty('description');
       expect(data).toHaveProperty('severity');
@@ -102,14 +102,14 @@ describe('Language Detection (toolDetectLanguage)', () => {
   });
 
   test('detects JavaScript from code patterns when no filename', () => {
-    const code = `const express = require('express');\nconst app = express();\nlet x = 5;`;
+    const code = 'const express = require(\'express\');\nconst app = express();\nlet x = 5;';
     const result = agent.toolDetectLanguage(code, '');
     expect(result.language).toBe('javascript');
     expect(result.detectedBy).toBe('code_patterns');
   });
 
   test('detects Python from code patterns when no filename', () => {
-    const code = `import flask\nfrom flask import request\ndef index():\n    return "hello"`;
+    const code = 'import flask\nfrom flask import request\ndef index():\n    return "hello"';
     const result = agent.toolDetectLanguage(code, '');
     expect(result.language).toBe('python');
     expect(result.detectedBy).toBe('code_patterns');
@@ -127,70 +127,70 @@ describe('Language Detection (toolDetectLanguage)', () => {
 
 describe('Static Pattern Scan (toolStaticPatternScan)', () => {
   test('detects SQL Injection in JavaScript', () => {
-    const code = `db.query("SELECT * FROM users WHERE id = " + req.query.id);`;
+    const code = 'db.query("SELECT * FROM users WHERE id = " + req.query.id);';
     const result = agent.toolStaticPatternScan(code, 'javascript');
     const sqlFindings = result.findings.filter(f => f.type === 'SQL Injection');
     expect(sqlFindings.length).toBeGreaterThan(0);
   });
 
   test('detects XSS via innerHTML in JavaScript', () => {
-    const code = `document.getElementById('output').innerHTML = userInput;`;
+    const code = 'document.getElementById(\'output\').innerHTML = userInput;';
     const result = agent.toolStaticPatternScan(code, 'javascript');
     const xssFindings = result.findings.filter(f => f.type === 'XSS');
     expect(xssFindings.length).toBeGreaterThan(0);
   });
 
   test('detects Hardcoded Secrets in JavaScript', () => {
-    const code = `const password = 'admin123';`;
+    const code = 'const password = \'admin123\';';
     const result = agent.toolStaticPatternScan(code, 'javascript');
     const secretFindings = result.findings.filter(f => f.type === 'Hardcoded Secrets');
     expect(secretFindings.length).toBeGreaterThan(0);
   });
 
   test('detects eval usage in JavaScript', () => {
-    const code = `const result = eval(userInput);`;
+    const code = 'const result = eval(userInput);';
     const result = agent.toolStaticPatternScan(code, 'javascript');
     const evalFindings = result.findings.filter(f => f.type === 'Eval Usage');
     expect(evalFindings.length).toBeGreaterThan(0);
   });
 
   test('detects Math.random in JavaScript', () => {
-    const code = `const token = Math.random().toString(36);`;
+    const code = 'const token = Math.random().toString(36);';
     const result = agent.toolStaticPatternScan(code, 'javascript');
     const randomFindings = result.findings.filter(f => f.type === 'Insecure Random');
     expect(randomFindings.length).toBeGreaterThan(0);
   });
 
   test('detects Command Injection in Python', () => {
-    const code = `import os\nos.system('ping ' + user_input)`;
+    const code = 'import os\nos.system(\'ping \' + user_input)';
     const result = agent.toolStaticPatternScan(code, 'python');
     const cmdFindings = result.findings.filter(f => f.type === 'Command Injection');
     expect(cmdFindings.length).toBeGreaterThan(0);
   });
 
   test('detects Debug Mode in Python', () => {
-    const code = `app.run(host='0.0.0.0', port=5000, debug=True)`;
+    const code = 'app.run(host=\'0.0.0.0\', port=5000, debug=True)';
     const result = agent.toolStaticPatternScan(code, 'python');
     const debugFindings = result.findings.filter(f => f.type === 'Debug Mode');
     expect(debugFindings.length).toBeGreaterThan(0);
   });
 
   test('detects pickle deserialization in Python', () => {
-    const code = `import pickle\ndata = pickle.loads(user_data)`;
+    const code = 'import pickle\ndata = pickle.loads(user_data)';
     const result = agent.toolStaticPatternScan(code, 'python');
     const pickleFindings = result.findings.filter(f => f.type === 'Pickle Deserialization');
     expect(pickleFindings.length).toBeGreaterThan(0);
   });
 
   test('returns zero findings for clean code', () => {
-    const code = `const x = 5;\nconst y = x + 10;\nconsole.log(y);`;
+    const code = 'const x = 5;\nconst y = x + 10;\nconsole.log(y);';
     const result = agent.toolStaticPatternScan(code, 'javascript');
     // May have 0 or very few findings (pattern-based can have noise)
     expect(result.totalFindings).toBeDefined();
   });
 
   test('detects SQL Injection in Java', () => {
-    const code = `Statement stmt = connection.createStatement();\nstmt.executeQuery("SELECT * FROM users WHERE id=" + userId);`;
+    const code = 'Statement stmt = connection.createStatement();\nstmt.executeQuery("SELECT * FROM users WHERE id=" + userId);';
     const result = agent.toolStaticPatternScan(code, 'java');
     const sqlFindings = result.findings.filter(f => f.type === 'SQL Injection');
     expect(sqlFindings.length).toBeGreaterThan(0);
@@ -198,21 +198,21 @@ describe('Static Pattern Scan (toolStaticPatternScan)', () => {
 
   // TypeScript patterns
   test('detects eval usage in TypeScript', () => {
-    const code = `const result: any = eval(userInput);`;
+    const code = 'const result: any = eval(userInput);';
     const result = agent.toolStaticPatternScan(code, 'typescript');
     const evalFindings = result.findings.filter(f => f.type === 'Eval Usage');
     expect(evalFindings.length).toBeGreaterThan(0);
   });
 
   test('detects any type abuse in TypeScript', () => {
-    const code = `function handle(data: any) { return data as any; }`;
+    const code = 'function handle(data: any) { return data as any; }';
     const result = agent.toolStaticPatternScan(code, 'typescript');
     const anyFindings = result.findings.filter(f => f.type === 'Any Type Abuse');
     expect(anyFindings.length).toBeGreaterThan(0);
   });
 
   test('detects Hardcoded Secrets in TypeScript', () => {
-    const code = `const apiKey = 'sk-abc123xyz';`;
+    const code = 'const apiKey = \'sk-abc123xyz\';';
     const result = agent.toolStaticPatternScan(code, 'typescript');
     const secretFindings = result.findings.filter(f => f.type === 'Hardcoded Secrets');
     expect(secretFindings.length).toBeGreaterThan(0);
@@ -220,14 +220,14 @@ describe('Static Pattern Scan (toolStaticPatternScan)', () => {
 
   // C# patterns
   test('detects SQL Injection in C#', () => {
-    const code = `var cmd = new SqlCommand("SELECT * FROM users WHERE id=" + userId, conn);`;
+    const code = 'var cmd = new SqlCommand("SELECT * FROM users WHERE id=" + userId, conn);';
     const result = agent.toolStaticPatternScan(code, 'csharp');
     const sqlFindings = result.findings.filter(f => f.type === 'SQL Injection');
     expect(sqlFindings.length).toBeGreaterThan(0);
   });
 
   test('detects Weak Crypto in C#', () => {
-    const code = `var hash = MD5.Create();`;
+    const code = 'var hash = MD5.Create();';
     const result = agent.toolStaticPatternScan(code, 'csharp');
     const cryptoFindings = result.findings.filter(f => f.type === 'Weak Crypto');
     expect(cryptoFindings.length).toBeGreaterThan(0);
@@ -235,14 +235,14 @@ describe('Static Pattern Scan (toolStaticPatternScan)', () => {
 
   // Go patterns
   test('detects SQL Injection in Go', () => {
-    const code = `rows, err := db.Query(fmt.Sprintf("SELECT * FROM users WHERE id=%s", id))`;
+    const code = 'rows, err := db.Query(fmt.Sprintf("SELECT * FROM users WHERE id=%s", id))';
     const result = agent.toolStaticPatternScan(code, 'go');
     const sqlFindings = result.findings.filter(f => f.type === 'SQL Injection');
     expect(sqlFindings.length).toBeGreaterThan(0);
   });
 
   test('detects Insecure TLS in Go', () => {
-    const code = `tlsConfig := &tls.Config{InsecureSkipVerify: true}`;
+    const code = 'tlsConfig := &tls.Config{InsecureSkipVerify: true}';
     const result = agent.toolStaticPatternScan(code, 'go');
     const tlsFindings = result.findings.filter(f => f.type === 'Insecure TLS');
     expect(tlsFindings.length).toBeGreaterThan(0);
@@ -250,21 +250,21 @@ describe('Static Pattern Scan (toolStaticPatternScan)', () => {
 
   // Ruby patterns
   test('detects Command Injection in Ruby', () => {
-    const code = `system("rm -rf " + params[:path])`;
+    const code = 'system("rm -rf " + params[:path])';
     const result = agent.toolStaticPatternScan(code, 'ruby');
     const cmdFindings = result.findings.filter(f => f.type === 'Command Injection');
     expect(cmdFindings.length).toBeGreaterThan(0);
   });
 
   test('detects eval usage in Ruby', () => {
-    const code = `result = eval(user_input)`;
+    const code = 'result = eval(user_input)';
     const result = agent.toolStaticPatternScan(code, 'ruby');
     const evalFindings = result.findings.filter(f => f.type === 'Eval Usage');
     expect(evalFindings.length).toBeGreaterThan(0);
   });
 
   test('detects Deserialization in Ruby', () => {
-    const code = `data = Marshal.load(user_data)`;
+    const code = 'data = Marshal.load(user_data)';
     const result = agent.toolStaticPatternScan(code, 'ruby');
     const deserFindings = result.findings.filter(f => f.type === 'Deserialization');
     expect(deserFindings.length).toBeGreaterThan(0);
@@ -468,12 +468,12 @@ describe('Submit Full Analysis (toolSubmitFullAnalysis)', () => {
 
 describe('Apply Security Fix (toolApplySecurityFix)', () => {
   test('replaces vulnerable code with fixed code', () => {
-    const original = `const password = 'admin123';`;
+    const original = 'const password = \'admin123\';';
     const result = agent.toolApplySecurityFix(
       original,
-      `'admin123'`,
-      `process.env.DB_PASSWORD`,
-      'Replaced hardcoded password with environment variable'
+      '\'admin123\'',
+      'process.env.DB_PASSWORD',
+      'Replaced hardcoded password with environment variable',
     );
 
     expect(result.success).toBe(true);
@@ -501,7 +501,7 @@ describe('Finalize Scan (toolFinalizeScan)', () => {
 
 describe('Finalize Refactor (toolFinalizeRefactor)', () => {
   test('marks refactor as complete with fixed code', () => {
-    const fixedCode = `const password = process.env.DB_PASSWORD;`;
+    const fixedCode = 'const password = process.env.DB_PASSWORD;';
     const result = agent.toolFinalizeRefactor(fixedCode, 'Replaced hardcoded password', ['Test login flow']);
 
     expect(result.refactorComplete).toBe(true);

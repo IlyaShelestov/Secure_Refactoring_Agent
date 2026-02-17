@@ -53,7 +53,7 @@ function getScanInstructions({ code, language, filename }) {
 You must analyze the following code for security vulnerabilities and provide a comprehensive report.
 
 ### Step 1: Detect Language
-${language ? `The language is: ${language}` : `Call detect_language to identify the programming language.`}
+${language ? `The language is: ${language}` : 'Call detect_language to identify the programming language.'}
 ${filename ? `Filename: ${filename}` : ''}
 
 ### Step 2: Static Pattern Scan
@@ -156,8 +156,8 @@ BEGIN FIXING NOW. Use the tools provided.`;
 }
 
 function getRefactorAllInstructions({ code, vulnerabilities, language }) {
-  const vulnList = vulnerabilities.map((v, i) => 
-    `${i + 1}. **${v.type}** (${v.severity}) - Lines: ${v.lineNumbers?.join(', ') || 'N/A'}\n   Description: ${v.description}`
+  const vulnList = vulnerabilities.map((v, i) =>
+    `${i + 1}. **${v.type}** (${v.severity}) - Lines: ${v.lineNumbers?.join(', ') || 'N/A'}\n   Description: ${v.description}`,
   ).join('\n');
 
   return `${AGENT_SYSTEM_PROMPT}

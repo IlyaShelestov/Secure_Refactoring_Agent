@@ -20,6 +20,9 @@
                 <button class="nav-btn active" data-tab="scan">
                     <i class="fas fa-search"></i> Scan
                 </button>
+                <button class="nav-btn" data-tab="history">
+                    <i class="fas fa-history"></i> History
+                </button>
                 <button class="nav-btn" data-tab="reference">
                     <i class="fas fa-book"></i> Reference
                 </button>
@@ -125,6 +128,33 @@
                     </div>
                     <div class="panel-footer">
                         <div id="fixes-summary"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History Tab -->
+            <section id="history-tab" class="tab-content">
+                <div class="panel-container single">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2><i class="fas fa-history"></i> Scan History</h2>
+                            <div class="panel-actions">
+                                <span id="history-count" class="badge">0</span>
+                                <button id="refresh-history-btn" class="btn btn-secondary">
+                                    <i class="fas fa-sync-alt"></i> Refresh
+                                </button>
+                                <button id="clear-history-btn" class="btn btn-danger">
+                                    <i class="fas fa-trash"></i> Clear All
+                                </button>
+                            </div>
+                        </div>
+                        <div class="panel-body" id="history-container">
+                            <div class="empty-state">
+                                <i class="fas fa-history"></i>
+                                <p>No scan history yet</p>
+                                <span>Completed scans will appear here</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

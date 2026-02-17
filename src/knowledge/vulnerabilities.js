@@ -434,7 +434,7 @@ export const VULNERABILITY_PATTERNS = {
     ],
     'Non-null Assertion': [
       /\w+!\./gi,
-      /\w+![\[;,)]/gi,
+      /\w+![;,)[\]]/gi,
     ],
   },
   csharp: {

@@ -24,15 +24,15 @@ const AGENT_TOOLS = [
       properties: {
         code: {
           type: 'STRING',
-          description: 'The source code to analyze'
+          description: 'The source code to analyze',
         },
         filename: {
           type: 'STRING',
-          description: 'Optional filename with extension'
-        }
+          description: 'Optional filename with extension',
+        },
       },
-      required: ['code']
-    }
+      required: ['code'],
+    },
   },
   {
     name: 'static_pattern_scan',
@@ -42,15 +42,15 @@ const AGENT_TOOLS = [
       properties: {
         code: {
           type: 'STRING',
-          description: 'The source code to scan'
+          description: 'The source code to scan',
         },
         language: {
           type: 'STRING',
-          description: 'The programming language (javascript, python, java, php, etc.)'
-        }
+          description: 'The programming language (javascript, python, java, php, etc.)',
+        },
       },
-      required: ['code', 'language']
-    }
+      required: ['code', 'language'],
+    },
   },
   {
     name: 'lookup_owasp',
@@ -60,11 +60,11 @@ const AGENT_TOOLS = [
       properties: {
         category: {
           type: 'STRING',
-          description: 'OWASP category ID (e.g., "A01:2021") or "all" for all categories'
-        }
+          description: 'OWASP category ID (e.g., "A01:2021") or "all" for all categories',
+        },
       },
-      required: ['category']
-    }
+      required: ['category'],
+    },
   },
   {
     name: 'lookup_cwe',
@@ -74,11 +74,11 @@ const AGENT_TOOLS = [
       properties: {
         cweId: {
           type: 'STRING',
-          description: 'CWE ID (e.g., "CWE-89") or vulnerability type name'
-        }
+          description: 'CWE ID (e.g., "CWE-89") or vulnerability type name',
+        },
       },
-      required: ['cweId']
-    }
+      required: ['cweId'],
+    },
   },
   {
     name: 'analyze_code_section',
@@ -88,23 +88,23 @@ const AGENT_TOOLS = [
       properties: {
         code: {
           type: 'STRING',
-          description: 'The code section to analyze'
+          description: 'The code section to analyze',
         },
         startLine: {
           type: 'NUMBER',
-          description: 'Starting line number'
+          description: 'Starting line number',
         },
         endLine: {
           type: 'NUMBER',
-          description: 'Ending line number'
+          description: 'Ending line number',
         },
         context: {
           type: 'STRING',
-          description: 'Additional context about what to look for'
-        }
+          description: 'Additional context about what to look for',
+        },
       },
-      required: ['code']
-    }
+      required: ['code'],
+    },
   },
   {
     name: 'report_vulnerability',
@@ -114,44 +114,44 @@ const AGENT_TOOLS = [
       properties: {
         type: {
           type: 'STRING',
-          description: 'Vulnerability type (e.g., SQL Injection, XSS, Command Injection)'
+          description: 'Vulnerability type (e.g., SQL Injection, XSS, Command Injection)',
         },
         severity: {
           type: 'STRING',
-          description: 'Severity level: Critical, High, Medium, or Low'
+          description: 'Severity level: Critical, High, Medium, or Low',
         },
         lineNumbers: {
           type: 'ARRAY',
           items: { type: 'NUMBER' },
-          description: 'Line numbers where the vulnerability exists'
+          description: 'Line numbers where the vulnerability exists',
         },
         codeSnippet: {
           type: 'STRING',
-          description: 'The vulnerable code snippet'
+          description: 'The vulnerable code snippet',
         },
         description: {
           type: 'STRING',
-          description: 'Detailed description of the vulnerability'
+          description: 'Detailed description of the vulnerability',
         },
         impact: {
           type: 'STRING',
-          description: 'Potential impact if exploited'
+          description: 'Potential impact if exploited',
         },
         owaspCategory: {
           type: 'STRING',
-          description: 'OWASP Top 10 2021 category (e.g., A03:2021)'
+          description: 'OWASP Top 10 2021 category (e.g., A03:2021)',
         },
         cweId: {
           type: 'STRING',
-          description: 'CWE identifier (e.g., CWE-89)'
+          description: 'CWE identifier (e.g., CWE-89)',
         },
         confidence: {
           type: 'STRING',
-          description: 'Confidence level: High, Medium, or Low'
-        }
+          description: 'Confidence level: High, Medium, or Low',
+        },
       },
-      required: ['type', 'severity', 'lineNumbers', 'description', 'impact']
-    }
+      required: ['type', 'severity', 'lineNumbers', 'description', 'impact'],
+    },
   },
   {
     name: 'submit_full_analysis',
@@ -173,9 +173,9 @@ const AGENT_TOOLS = [
               impact: { type: 'STRING' },
               owaspCategory: { type: 'STRING' },
               cweId: { type: 'STRING' },
-              confidence: { type: 'STRING' }
-            }
-          }
+              confidence: { type: 'STRING' },
+            },
+          },
         },
         attackVectors: {
           type: 'ARRAY',
@@ -185,9 +185,9 @@ const AGENT_TOOLS = [
             properties: {
               vector: { type: 'STRING', description: 'Attack name' },
               description: { type: 'STRING', description: 'How the attack works' },
-              likelihood: { type: 'STRING', description: 'High, Medium, or Low' }
-            }
-          }
+              likelihood: { type: 'STRING', description: 'High, Medium, or Low' },
+            },
+          },
         },
         riskAreas: {
           type: 'ARRAY',
@@ -197,9 +197,9 @@ const AGENT_TOOLS = [
             properties: {
               location: { type: 'STRING', description: 'Code location' },
               risk: { type: 'STRING', description: 'Risk description' },
-              priority: { type: 'STRING', description: 'Critical, High, Medium, or Low' }
-            }
-          }
+              priority: { type: 'STRING', description: 'Critical, High, Medium, or Low' },
+            },
+          },
         },
         recommendations: {
           type: 'ARRAY',
@@ -209,26 +209,26 @@ const AGENT_TOOLS = [
             properties: {
               recommendation: { type: 'STRING' },
               priority: { type: 'STRING', description: 'Critical, High, Medium, or Low' },
-              effort: { type: 'STRING', description: 'Low, Medium, or High' }
-            }
-          }
+              effort: { type: 'STRING', description: 'Low, Medium, or High' },
+            },
+          },
         },
         securePatterns: {
           type: 'ARRAY',
           description: 'Array of secure patterns found (positive findings)',
-          items: { type: 'STRING' }
+          items: { type: 'STRING' },
         },
         overallAssessment: {
           type: 'STRING',
-          description: 'Overall security assessment summary'
+          description: 'Overall security assessment summary',
         },
         securityScore: {
           type: 'NUMBER',
-          description: 'Security score from 0-100'
-        }
+          description: 'Security score from 0-100',
+        },
       },
-      required: ['vulnerabilities', 'overallAssessment']
-    }
+      required: ['vulnerabilities', 'overallAssessment'],
+    },
   },
   {
     name: 'generate_fix',
@@ -238,23 +238,23 @@ const AGENT_TOOLS = [
       properties: {
         vulnerableCode: {
           type: 'STRING',
-          description: 'The original vulnerable code'
+          description: 'The original vulnerable code',
         },
         vulnerabilityType: {
           type: 'STRING',
-          description: 'Type of vulnerability to fix'
+          description: 'Type of vulnerability to fix',
         },
         language: {
           type: 'STRING',
-          description: 'Programming language'
+          description: 'Programming language',
         },
         context: {
           type: 'STRING',
-          description: 'Additional context about the fix requirements'
-        }
+          description: 'Additional context about the fix requirements',
+        },
       },
-      required: ['vulnerableCode', 'vulnerabilityType', 'language']
-    }
+      required: ['vulnerableCode', 'vulnerabilityType', 'language'],
+    },
   },
   {
     name: 'apply_security_fix',
@@ -264,23 +264,23 @@ const AGENT_TOOLS = [
       properties: {
         originalCode: {
           type: 'STRING',
-          description: 'The original complete code'
+          description: 'The original complete code',
         },
         vulnerableSection: {
           type: 'STRING',
-          description: 'The vulnerable code section to replace'
+          description: 'The vulnerable code section to replace',
         },
         fixedSection: {
           type: 'STRING',
-          description: 'The secure replacement code'
+          description: 'The secure replacement code',
         },
         explanation: {
           type: 'STRING',
-          description: 'Explanation of the security fix'
-        }
+          description: 'Explanation of the security fix',
+        },
       },
-      required: ['originalCode', 'vulnerableSection', 'fixedSection', 'explanation']
-    }
+      required: ['originalCode', 'vulnerableSection', 'fixedSection', 'explanation'],
+    },
   },
   {
     name: 'calculate_security_score',
@@ -290,31 +290,31 @@ const AGENT_TOOLS = [
       properties: {
         totalVulnerabilities: {
           type: 'NUMBER',
-          description: 'Total number of vulnerabilities found'
+          description: 'Total number of vulnerabilities found',
         },
         criticalCount: {
           type: 'NUMBER',
-          description: 'Number of critical vulnerabilities'
+          description: 'Number of critical vulnerabilities',
         },
         highCount: {
           type: 'NUMBER',
-          description: 'Number of high severity vulnerabilities'
+          description: 'Number of high severity vulnerabilities',
         },
         mediumCount: {
           type: 'NUMBER',
-          description: 'Number of medium severity vulnerabilities'
+          description: 'Number of medium severity vulnerabilities',
         },
         lowCount: {
           type: 'NUMBER',
-          description: 'Number of low severity vulnerabilities'
+          description: 'Number of low severity vulnerabilities',
         },
         codeLength: {
           type: 'NUMBER',
-          description: 'Total lines of code analyzed'
-        }
+          description: 'Total lines of code analyzed',
+        },
       },
-      required: ['totalVulnerabilities', 'codeLength']
-    }
+      required: ['totalVulnerabilities', 'codeLength'],
+    },
   },
   {
     name: 'report_attack_vector',
@@ -324,24 +324,24 @@ const AGENT_TOOLS = [
       properties: {
         vector: {
           type: 'STRING',
-          description: 'Name of the attack vector (e.g., "SQL Injection Attack", "Remote Code Execution")'
+          description: 'Name of the attack vector (e.g., "SQL Injection Attack", "Remote Code Execution")',
         },
         description: {
           type: 'STRING',
-          description: 'Detailed description of how the attack could be executed'
+          description: 'Detailed description of how the attack could be executed',
         },
         likelihood: {
           type: 'STRING',
-          description: 'Likelihood of the attack: High, Medium, or Low'
+          description: 'Likelihood of the attack: High, Medium, or Low',
         },
         affectedVulnerabilities: {
           type: 'ARRAY',
           items: { type: 'STRING' },
-          description: 'List of vulnerability types that enable this attack'
-        }
+          description: 'List of vulnerability types that enable this attack',
+        },
       },
-      required: ['vector', 'description', 'likelihood']
-    }
+      required: ['vector', 'description', 'likelihood'],
+    },
   },
   {
     name: 'report_risk_area',
@@ -351,19 +351,19 @@ const AGENT_TOOLS = [
       properties: {
         location: {
           type: 'STRING',
-          description: 'Location in code (e.g., "Database Connection", "User Input Handler")'
+          description: 'Location in code (e.g., "Database Connection", "User Input Handler")',
         },
         risk: {
           type: 'STRING',
-          description: 'Description of the security risk'
+          description: 'Description of the security risk',
         },
         priority: {
           type: 'STRING',
-          description: 'Priority level: Critical, High, Medium, or Low'
-        }
+          description: 'Priority level: Critical, High, Medium, or Low',
+        },
       },
-      required: ['location', 'risk', 'priority']
-    }
+      required: ['location', 'risk', 'priority'],
+    },
   },
   {
     name: 'add_recommendation',
@@ -373,19 +373,19 @@ const AGENT_TOOLS = [
       properties: {
         recommendation: {
           type: 'STRING',
-          description: 'The security recommendation'
+          description: 'The security recommendation',
         },
         priority: {
           type: 'STRING',
-          description: 'Priority: Critical, High, Medium, or Low'
+          description: 'Priority: Critical, High, Medium, or Low',
         },
         effort: {
           type: 'STRING',
-          description: 'Implementation effort: Low, Medium, or High'
-        }
+          description: 'Implementation effort: Low, Medium, or High',
+        },
       },
-      required: ['recommendation', 'priority', 'effort']
-    }
+      required: ['recommendation', 'priority', 'effort'],
+    },
   },
   {
     name: 'report_secure_pattern',
@@ -395,11 +395,11 @@ const AGENT_TOOLS = [
       properties: {
         pattern: {
           type: 'STRING',
-          description: 'Description of the secure pattern found'
-        }
+          description: 'Description of the secure pattern found',
+        },
       },
-      required: ['pattern']
-    }
+      required: ['pattern'],
+    },
   },
   {
     name: 'finalize_scan',
@@ -409,16 +409,16 @@ const AGENT_TOOLS = [
       properties: {
         summary: {
           type: 'STRING',
-          description: 'Summary of the security analysis'
+          description: 'Summary of the security analysis',
         },
         recommendations: {
           type: 'ARRAY',
           items: { type: 'STRING' },
-          description: 'List of security recommendations'
-        }
+          description: 'List of security recommendations',
+        },
       },
-      required: ['summary']
-    }
+      required: ['summary'],
+    },
   },
   {
     name: 'finalize_refactor',
@@ -428,32 +428,32 @@ const AGENT_TOOLS = [
       properties: {
         fixedCode: {
           type: 'STRING',
-          description: 'The complete refactored code with all fixes applied'
+          description: 'The complete refactored code with all fixes applied',
         },
         changesSummary: {
           type: 'STRING',
-          description: 'Summary of all changes made'
+          description: 'Summary of all changes made',
         },
         testingRecommendations: {
           type: 'ARRAY',
           items: { type: 'STRING' },
-          description: 'Recommendations for testing the fixed code'
-        }
+          description: 'Recommendations for testing the fixed code',
+        },
       },
-      required: ['fixedCode']
-    }
-  }
+      required: ['fixedCode'],
+    },
+  },
 ];
 
 class SecureRefactorAgent {
   constructor() {
     this.genAI = new GoogleGenerativeAI(config.gemini.apiKey);
-    
+
     // Create function declarations for Gemini
     this.functionDeclarations = AGENT_TOOLS.map(tool => ({
       name: tool.name,
       description: tool.description,
-      parameters: tool.parameters
+      parameters: tool.parameters,
     }));
 
     // Initialize the model with function calling capabilities
@@ -496,7 +496,7 @@ class SecureRefactorAgent {
    */
   async executeTool(functionName, args) {
     logger.info(`Agent calling tool: ${functionName}`);
-    logger.debug(`Tool arguments:`, JSON.stringify(args, null, 2));
+    logger.debug('Tool arguments:', JSON.stringify(args, null, 2));
 
     switch (functionName) {
       case 'detect_language':
@@ -622,9 +622,9 @@ class SecureRefactorAgent {
     return {
       totalFindings: findings.length,
       findings: findings,
-      message: findings.length > 0 
+      message: findings.length > 0
         ? `Found ${findings.length} potential issues via static analysis. Investigate each one.`
-        : 'No obvious patterns found. Perform deeper analysis.'
+        : 'No obvious patterns found. Perform deeper analysis.',
     };
   }
 
@@ -635,7 +635,7 @@ class SecureRefactorAgent {
           id,
           name: data.name,
           description: data.description,
-        }))
+        })),
       };
     }
 
@@ -657,7 +657,7 @@ class SecureRefactorAgent {
     // Direct lookup
     const normalized = cweId.toUpperCase().startsWith('CWE-') ? cweId.toUpperCase() : `CWE-${cweId}`;
     const data = CWE_DATABASE[normalized];
-    
+
     if (data) {
       return {
         id: normalized,
@@ -681,15 +681,15 @@ class SecureRefactorAgent {
       }
     }
 
-    return { 
+    return {
       error: `CWE ${cweId} not found in local database`,
-      suggestion: 'Use common CWE IDs like CWE-89 (SQL Injection), CWE-79 (XSS), CWE-78 (Command Injection)'
+      suggestion: 'Use common CWE IDs like CWE-89 (SQL Injection), CWE-79 (XSS), CWE-78 (Command Injection)',
     };
   }
 
   toolAnalyzeCodeSection(code, startLine, endLine, context) {
     const lines = code.split('\n');
-    const section = startLine && endLine 
+    const section = startLine && endLine
       ? lines.slice(startLine - 1, endLine).join('\n')
       : code;
 
@@ -697,7 +697,7 @@ class SecureRefactorAgent {
       codeSection: section,
       lineCount: section.split('\n').length,
       context: context || 'General security analysis',
-      hint: 'Look for: input validation, output encoding, authentication, authorization, cryptography, error handling'
+      hint: 'Look for: input validation, output encoding, authentication, authorization, cryptography, error handling',
     };
   }
 
@@ -724,7 +724,7 @@ class SecureRefactorAgent {
     }
 
     this.sessionState.foundVulnerabilities.push(vulnerability);
-    
+
     logger.info(`Vulnerability reported: ${vulnData.type} (${vulnData.severity})`);
 
     return {
@@ -742,7 +742,7 @@ class SecureRefactorAgent {
         attackVectors: [],
         riskAreas: [],
         securePatterns: [],
-        overallAssessment: ''
+        overallAssessment: '',
       };
     }
 
@@ -834,7 +834,7 @@ class SecureRefactorAgent {
         riskAreas: this.sessionState.analysisData.riskAreas.length,
         recommendations: this.sessionState.analysisData.recommendations.length,
         securePatterns: this.sessionState.analysisData.securePatterns.length,
-      }
+      },
     };
   }
 
@@ -843,7 +843,7 @@ class SecureRefactorAgent {
     const fixGuidance = {
       'SQL Injection': {
         approach: 'Use parameterized queries or prepared statements',
-        example: language === 'javascript' 
+        example: language === 'javascript'
           ? 'db.query("SELECT * FROM users WHERE id = ?", [userId])'
           : 'Use parameterized queries with placeholders',
       },
@@ -880,7 +880,7 @@ class SecureRefactorAgent {
 
   toolApplySecurityFix(originalCode, vulnerableSection, fixedSection, explanation) {
     const fixedCode = originalCode.replaceAll(vulnerableSection, fixedSection);
-    
+
     this.sessionState.appliedFixes.push({
       original: vulnerableSection,
       fixed: fixedSection,
@@ -899,17 +899,17 @@ class SecureRefactorAgent {
   }
 
   toolCalculateSecurityScore(args) {
-    const { totalVulnerabilities = 0, criticalCount = 0, highCount = 0, mediumCount = 0, lowCount = 0, codeLength = 100 } = args;
-    
+    const { totalVulnerabilities = 0, criticalCount = 0, highCount = 0, mediumCount = 0, lowCount = 0, codeLength: _codeLength = 100 } = args;
+
     const weights = { Critical: 25, High: 15, Medium: 8, Low: 3 };
-    let deductions = (criticalCount * weights.Critical) + 
-                     (highCount * weights.High) + 
-                     (mediumCount * weights.Medium) + 
+    const deductions = (criticalCount * weights.Critical) +
+                     (highCount * weights.High) +
+                     (mediumCount * weights.Medium) +
                      (lowCount * weights.Low);
 
     // Base score of 100, reduced by vulnerability severity
     const score = Math.max(0, Math.min(100, 100 - deductions));
-    
+
     let riskLevel;
     if (score >= 90) riskLevel = 'Low';
     else if (score >= 70) riskLevel = 'Medium';
@@ -925,7 +925,7 @@ class SecureRefactorAgent {
         high: highCount,
         medium: mediumCount,
         low: lowCount,
-      }
+      },
     };
   }
 
@@ -945,7 +945,7 @@ class SecureRefactorAgent {
         attackVectors: [],
         riskAreas: [],
         securePatterns: [],
-        overallAssessment: ''
+        overallAssessment: '',
       };
     }
 
@@ -974,7 +974,7 @@ class SecureRefactorAgent {
         attackVectors: [],
         riskAreas: [],
         securePatterns: [],
-        overallAssessment: ''
+        overallAssessment: '',
       };
     }
 
@@ -1003,7 +1003,7 @@ class SecureRefactorAgent {
         attackVectors: [],
         riskAreas: [],
         securePatterns: [],
-        overallAssessment: ''
+        overallAssessment: '',
       };
     }
 
@@ -1012,7 +1012,7 @@ class SecureRefactorAgent {
 
     return {
       success: true,
-      message: `Recommendation recorded`,
+      message: 'Recommendation recorded',
       totalRecommendations: this.sessionState.analysisData.recommendations.length,
     };
   }
@@ -1025,7 +1025,7 @@ class SecureRefactorAgent {
         attackVectors: [],
         riskAreas: [],
         securePatterns: [],
-        overallAssessment: ''
+        overallAssessment: '',
       };
     }
 
@@ -1034,19 +1034,19 @@ class SecureRefactorAgent {
 
     return {
       success: true,
-      message: `Secure pattern recorded`,
+      message: 'Secure pattern recorded',
       totalSecurePatterns: this.sessionState.analysisData.securePatterns.length,
     };
   }
 
   toolFinalizeScan(summary, recommendations = []) {
     this.sessionState.scanComplete = true;
-    
+
     // Store overall assessment if provided
     if (this.sessionState.analysisData) {
       this.sessionState.analysisData.overallAssessment = summary;
     }
-    
+
     const severityCounts = {
       Critical: 0, High: 0, Medium: 0, Low: 0,
     };
@@ -1061,10 +1061,10 @@ class SecureRefactorAgent {
       recommendations,
       totalVulnerabilities: this.sessionState.foundVulnerabilities.length,
       severityBreakdown: severityCounts,
-      riskLevel: severityCounts.Critical > 0 ? 'Critical' 
+      riskLevel: severityCounts.Critical > 0 ? 'Critical'
         : severityCounts.High > 0 ? 'High'
-        : severityCounts.Medium > 0 ? 'Medium'
-        : severityCounts.Low > 0 ? 'Low' : 'None',
+          : severityCounts.Medium > 0 ? 'Medium'
+            : severityCounts.Low > 0 ? 'Low' : 'None',
     };
   }
   toolFinalizeRefactor(fixedCode, changesSummary, testingRecommendations = []) {
@@ -1094,7 +1094,7 @@ class SecureRefactorAgent {
     while (iterations < maxIterations) {
       iterations++;
       const candidate = response.response.candidates?.[0];
-      
+
       if (!candidate) {
         logger.error('No response candidate from model');
         break;
@@ -1111,17 +1111,17 @@ class SecureRefactorAgent {
 
       // Execute all function calls and collect results
       const functionResponses = [];
-      
+
       for (const part of functionCalls) {
         const { name, args } = part.functionCall;
-        
+
         try {
           const result = await this.executeTool(name, args);
           functionResponses.push({
             functionResponse: {
               name: name,
               response: result,
-            }
+            },
           });
         } catch (error) {
           logger.error(`Tool execution error for ${name}:`, error);
@@ -1129,7 +1129,7 @@ class SecureRefactorAgent {
             functionResponse: {
               name: name,
               response: { error: error.message },
-            }
+            },
           });
         }
       }
@@ -1158,7 +1158,7 @@ class SecureRefactorAgent {
       riskAreas: [],
       securePatterns: [],
       overallAssessment: '',
-      securityScore: null
+      securityScore: null,
     };
 
     logger.info('Starting AI Agent vulnerability scan');
@@ -1184,7 +1184,7 @@ class SecureRefactorAgent {
       const highCount = vulns.filter(v => v.severity === 'High').length;
       const mediumCount = vulns.filter(v => v.severity === 'Medium').length;
       const lowCount = vulns.filter(v => v.severity === 'Low').length;
-      
+
       let score, riskLevel;
       if (this.sessionState.analysisData.securityScore !== null) {
         score = this.sessionState.analysisData.securityScore;
@@ -1196,7 +1196,7 @@ class SecureRefactorAgent {
           highCount,
           mediumCount,
           lowCount,
-          codeLength: code.split('\n').length
+          codeLength: code.split('\n').length,
         });
         score = scoreResult.score;
         riskLevel = scoreResult.riskLevel;
@@ -1216,7 +1216,7 @@ class SecureRefactorAgent {
           attackVectors: this.sessionState.analysisData.attackVectors,
           riskAreas: this.sessionState.analysisData.riskAreas,
           securePatterns: this.sessionState.analysisData.securePatterns,
-          overallAssessment: this.sessionState.analysisData.overallAssessment || this.generateOverallAssessment({ score })
+          overallAssessment: this.sessionState.analysisData.overallAssessment || this.generateOverallAssessment({ score }),
         },
         agentIterations: true,
       };
@@ -1336,8 +1336,8 @@ class SecureRefactorAgent {
       }));
 
       // Generate security improvements list
-      const securityImprovements = this.sessionState.appliedFixes.map(fix => 
-        `Fixed: ${fix.explanation}`
+      const securityImprovements = this.sessionState.appliedFixes.map(fix =>
+        `Fixed: ${fix.explanation}`,
       );
 
       return {
@@ -1374,7 +1374,7 @@ class SecureRefactorAgent {
       riskAreas: [],
       securePatterns: [],
       overallAssessment: '',
-      securityScore: null
+      securityScore: null,
     };
 
     logger.info('Starting AI Agent security posture analysis');
@@ -1398,7 +1398,7 @@ class SecureRefactorAgent {
       const highCount = vulns.filter(v => v.severity === 'High').length;
       const mediumCount = vulns.filter(v => v.severity === 'Medium').length;
       const lowCount = vulns.filter(v => v.severity === 'Low').length;
-      
+
       // Use submitted score if available, otherwise calculate
       let score, riskLevel;
       if (this.sessionState.analysisData.securityScore !== null) {
@@ -1411,7 +1411,7 @@ class SecureRefactorAgent {
           highCount,
           mediumCount,
           lowCount,
-          codeLength: code.split('\n').length
+          codeLength: code.split('\n').length,
         });
         score = scoreResult.score;
         riskLevel = scoreResult.riskLevel;
@@ -1429,7 +1429,7 @@ class SecureRefactorAgent {
           attackVectors: this.sessionState.analysisData.attackVectors,
           riskAreas: this.sessionState.analysisData.riskAreas,
           securePatterns: this.sessionState.analysisData.securePatterns,
-          overallAssessment: this.sessionState.analysisData.overallAssessment || this.generateOverallAssessment({ score })
+          overallAssessment: this.sessionState.analysisData.overallAssessment || this.generateOverallAssessment({ score }),
         },
       };
 
@@ -1482,8 +1482,8 @@ class SecureRefactorAgent {
       vulnerabilityTypes: typeCounts,
       riskLevel: severityCounts.Critical > 0 ? 'Critical'
         : severityCounts.High > 0 ? 'High'
-        : severityCounts.Medium > 0 ? 'Medium'
-        : severityCounts.Low > 0 ? 'Low' : 'None',
+          : severityCounts.Medium > 0 ? 'Medium'
+            : severityCounts.Low > 0 ? 'Low' : 'None',
     };
   }
 }

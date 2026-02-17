@@ -9,6 +9,7 @@ import SecureRefactorAgent from '../agent/SecureRefactorAgent.js';
 import logger from '../utils/logger.js';
 import config from '../config/index.js';
 import { OWASP_TOP_10_2021, CWE_DATABASE } from '../knowledge/vulnerabilities.js';
+import { saveScan, getScan, listScans, scanCount, clearAllScans } from '../database/index.js';
 
 const router = express.Router();
 const agent = new SecureRefactorAgent();
@@ -31,8 +32,7 @@ const upload = multer({
   },
 });
 
-// Store for scan results (in-memory for demo, use Redis/DB in production)
-const scanResults = new Map();
+// Scan results are now persisted in SQLite (see src/database/index.js)
 
 /**
  * Health check endpoint
@@ -113,13 +113,8 @@ router.post('/scan', async (req, res) => {
 
     const result = await agent.scanVulnerabilities(code, language, filename);
 
-    // Store result
-    scanResults.set(scanId, {
-      ...result,
-      scanId,
-      timestamp: new Date().toISOString(),
-      code,
-    });
+    // Persist result to SQLite
+    saveScan(scanId, result, code, filename);
 
     res.json({
       ...result,
@@ -155,13 +150,8 @@ router.post('/scan/file', upload.single('file'), async (req, res) => {
 
     const result = await agent.scanVulnerabilities(code, null, filename);
 
-    scanResults.set(scanId, {
-      ...result,
-      scanId,
-      timestamp: new Date().toISOString(),
-      filename,
-      code,
-    });
+    // Persist result to SQLite
+    saveScan(scanId, result, code, filename);
 
     res.json({
       ...result,
@@ -217,8 +207,8 @@ router.post('/refactor/all', async (req, res) => {
     let code, vulnerabilities, language;
 
     if (req.body.scanId) {
-      // Use stored scan results
-      const scan = scanResults.get(req.body.scanId);
+      // Retrieve from database
+      const scan = getScan(req.body.scanId);
       if (!scan) {
         return res.status(404).json({
           success: false,
@@ -291,8 +281,8 @@ router.post('/analyze', async (req, res) => {
  * GET /api/scan/:scanId
  */
 router.get('/scan/:scanId', (req, res) => {
-  const scan = scanResults.get(req.params.scanId);
-  
+  const scan = getScan(req.params.scanId);
+
   if (!scan) {
     return res.status(404).json({
       success: false,
@@ -301,6 +291,26 @@ router.get('/scan/:scanId', (req, res) => {
   }
 
   res.json(scan);
+});
+
+/**
+ * List recent scans (metadata only)
+ * GET /api/scans?limit=20
+ */
+router.get('/scans', (req, res) => {
+  const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
+  const scans = listScans(limit);
+  res.json({ scans, total: scanCount() });
+});
+
+/**
+ * Clear all scan history
+ * DELETE /api/scans
+ */
+router.delete('/scans', (req, res) => {
+  const removed = clearAllScans();
+  logger.info(`Cleared ${removed} scans from history`);
+  res.json({ success: true, removed });
 });
 
 /**

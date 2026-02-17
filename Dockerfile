@@ -1,12 +1,15 @@
 # Build stage
 FROM node:20-alpine AS builder
 
+# better-sqlite3 requires build tools for native compilation
+RUN apk add --no-cache python3 make g++
+
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install dependencies (including native modules)
 RUN npm ci --only=production
 
 # Production stage
@@ -22,8 +25,8 @@ RUN addgroup -g 1001 -S nodejs && \
 COPY --from=builder /app/node_modules ./node_modules
 COPY --chown=nodejs:nodejs . .
 
-# Create logs directory
-RUN mkdir -p logs && chown -R nodejs:nodejs logs
+# Create logs and data directories
+RUN mkdir -p logs data && chown -R nodejs:nodejs logs data
 
 # Switch to non-root user
 USER nodejs

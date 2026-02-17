@@ -39,7 +39,9 @@ This agent uses **Gemini's function calling feature** to create a true autonomou
 - **Multi-Language Support**: Supports JavaScript, TypeScript, Python, Java, PHP, Go, Ruby, and C#
 - **Web Interface**: User-friendly dashboard for code scanning and refactoring
 - **REST API**: Programmatic access for integration with CI/CD pipelines
+- **SQLite Persistence**: Scan results stored in SQLite with full history and querying
 - **Security Posture Analysis**: Comprehensive security assessment with scoring
+- **CI Pipeline**: GitHub Actions pipeline with lint, test, and Docker build stages
 
 ## Prerequisites
 
@@ -120,6 +122,7 @@ This agent uses **Gemini's function calling feature** to create a true autonomou
 | `RATE_LIMIT_MAX_REQUESTS` | Max requests per window | 100 |
 | `MAX_CODE_LENGTH` | Maximum code length in characters | 50000 |
 | `LOG_LEVEL` | Logging level (error/warn/info/debug) | info |
+| `DATABASE_PATH` | Path to SQLite database file | data/scans.db |
 | `SUPPORTED_LANGUAGES` | Comma-separated list of supported languages | javascript,typescript,python,java,csharp,php,go,ruby |
 | `ALLOWED_ORIGINS` | Comma-separated list of allowed CORS origins | * |
 
@@ -200,6 +203,12 @@ Content-Type: application/json
 GET /api/scan/:scanId
 ```
 
+### List Recent Scans
+```
+GET /api/scans?limit=20
+```
+Returns paginated scan history (metadata only, no code). Max limit: 100.
+
 ### Get OWASP Reference
 ```
 GET /api/reference/owasp
@@ -269,6 +278,8 @@ secure-refactor-agent/
 │   │   └── prompts.js              # AI system prompts
 │   ├── config/
 │   │   └── index.js                # Configuration
+│   ├── database/
+│   │   └── index.js                # SQLite persistence layer
 │   ├── knowledge/
 │   │   └── vulnerabilities.js      # OWASP/CWE knowledge base
 │   ├── routes/
@@ -282,9 +293,15 @@ secure-refactor-agent/
 │   ├── js/
 │   │   └── app.js                  # Frontend application
 │   └── index.html                  # Web interface
+├── data/                           # SQLite database (created at runtime)
 ├── logs/                           # Log files (created at runtime)
 ├── tests/
-│   └── agent.test.js               # Automated test suite (58 tests)
+│   ├── agent.test.js               # Agent unit tests (58 tests)
+│   └── database.test.js            # Database integration tests (11 tests)
+├── .eslintrc.json                  # ESLint configuration
+├── .github/
+│   └── workflows/
+│       └── ci.yml                  # GitHub Actions CI pipeline
 ├── .env.example                    # Environment template
 ├── Dockerfile                      # Docker image definition
 ├── docker-compose.yml              # Docker Compose configuration
@@ -300,7 +317,23 @@ Run the automated test suite:
 npm test
 ```
 
-The project includes 58 unit tests covering knowledge base validation, language detection, static pattern scanning (all 8 languages), security scoring, OWASP/CWE lookups, vulnerability reporting, analysis, fix application, session management, and summaries.
+Run linting:
+
+```bash
+npm run lint
+```
+
+The project includes 69 tests across two test files:
+- **agent.test.js** (58 tests): Knowledge base validation, language detection, static pattern scanning (all 8 languages), security scoring, OWASP/CWE lookups, vulnerability reporting, analysis, fix application, session management, and summaries.
+- **database.test.js** (11 tests): Schema validation, CRUD operations (save/get scans), pagination, cascading deletes, and foreign key enforcement.
+
+## CI/CD
+
+The project uses a GitHub Actions CI pipeline (`.github/workflows/ci.yml`) that runs on every push and pull request:
+
+1. **Lint** — ESLint static analysis
+2. **Test** — Full Jest test suite (69 tests)
+3. **Build** — Docker image build verification
 
 ## Security Considerations
 
@@ -308,6 +341,7 @@ The project includes 58 unit tests covering knowledge base validation, language 
 - API rate limiting is enabled by default to prevent abuse
 - Do not expose the API publicly without proper authentication in production
 - Audit logs are maintained for all operations
+- Scan results are persisted in SQLite with prepared statements (preventing SQL injection)
 - The Docker container runs as a non-root user
 
 ## Troubleshooting

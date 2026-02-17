@@ -15,25 +15,30 @@ export const config = {
     maxTokens: 8192,
     temperature: 0.2,
   },
-  
+
   // Server Configuration
   server: {
     port: parseInt(process.env.PORT, 10) || 3000,
     nodeEnv: process.env.NODE_ENV || 'development',
   },
-  
+
   // Security Settings
   security: {
     rateLimitWindowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10) || 900000,
     rateLimitMaxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS, 10) || 100,
   },
-  
+
   // Agent Configuration
   agent: {
     maxCodeLength: parseInt(process.env.MAX_CODE_LENGTH, 10) || 50000,
     supportedLanguages: (process.env.SUPPORTED_LANGUAGES || 'javascript,typescript,python,java,csharp,php,go,ruby').split(','),
   },
-  
+
+  // Database Configuration
+  database: {
+    path: process.env.DATABASE_PATH || undefined, // defaults to data/scans.db
+  },
+
   // Logging
   logging: {
     level: process.env.LOG_LEVEL || 'info',
