@@ -921,7 +921,7 @@ function renderHistory(scans, total) {
         const risk = scan.riskLevel || '—';
 
         return `
-            <tr data-scan-id="${escapeHtml(scan.scanId)}" onclick="viewHistoryScan('${escapeHtml(scan.scanId)}')">
+            <tr class="history-row" data-scan-id="${escapeHtml(scan.scanId)}">
                 <td>${escapeHtml(date)}</td>
                 <td>${escapeHtml(scan.language || 'Unknown')}</td>
                 <td>${escapeHtml(scan.filename || '—')}</td>
@@ -945,6 +945,13 @@ function renderHistory(scans, total) {
             </thead>
             <tbody>${rows}</tbody>
         </table>`;
+
+    // Attach click handlers (CSP-safe — no inline onclick)
+    historyContainer.querySelectorAll('.history-row').forEach(row => {
+        row.addEventListener('click', () => {
+            viewHistoryScan(row.dataset.scanId);
+        });
+    });
 }
 
 // View a past scan — fetches full details and loads into main Scan tab

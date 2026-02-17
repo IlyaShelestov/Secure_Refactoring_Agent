@@ -1096,7 +1096,9 @@ class SecureRefactorAgent {
       const candidate = response.response.candidates?.[0];
 
       if (!candidate) {
-        logger.error('No response candidate from model');
+        // After the final tool call (e.g., finalize_scan) the model may
+        // return no candidates, which is expected — treat as completion.
+        logger.info(`Agent completed after ${iterations} iterations (no further candidate)`);
         break;
       }
 
